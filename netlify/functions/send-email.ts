@@ -22,8 +22,7 @@ const handler: Handler = async (event) => {
 
     // EmailJS 초기화
     emailjs.init({
-      publicKey: process.env.EMAILJS_PUBLIC_KEY,
-      privateKey: process.env.EMAILJS_PRIVATE_KEY
+      publicKey: process.env.EMAILJS_PUBLIC_KEY
     });
 
     // 이메일 발송
