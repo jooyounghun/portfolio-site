@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import emailjs from '@emailjs/nodejs';
+import nodemailer from 'nodemailer';
 
 const handler: Handler = async (event) => {
   if (event.httpMethod !== 'POST') {
@@ -20,22 +20,31 @@ const handler: Handler = async (event) => {
       };
     }
 
-    // EmailJS 초기화
-    emailjs.init({
-      publicKey: process.env.EMAILJS_PUBLIC_KEY
+    // Gmail SMTP 설정
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_PASSWORD
+      }
     });
 
+    // 이메일 옵션
+    const mailOptions = {
+      from: process.env.GMAIL_USER,
+      to: 'jymk04130@gmail.com',
+      subject: `새로운 포트폴리오 메시지 - ${name}`,
+      html: `
+        <h2>새로운 메시지가 도착했습니다!</h2>
+        <p><strong>발신자:</strong> ${name}</p>
+        <p><strong>이메일:</strong> ${email}</p>
+        <p><strong>메시지:</strong></p>
+        <p>${message.replace(/\n/g, '<br>')}</p>
+      `
+    };
+
     // 이메일 발송
-    await emailjs.send(
-      process.env.EMAILJS_SERVICE_ID!,
-      process.env.EMAILJS_TEMPLATE_ID!,
-      {
-        to_email: 'jymk04130@gmail.com',
-        from_name: name,
-        from_email: email,
-        message: message
-      }
-    );
+    await transporter.sendMail(mailOptions);
 
     return {
       statusCode: 200,
