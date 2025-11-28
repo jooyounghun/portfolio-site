@@ -83,6 +83,16 @@
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
+.error-message {
+  padding: 1rem;
+  background-color: #fee;
+  color: #c33;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
 .submit-btn {
   padding: 0.75rem 1.5rem;
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
@@ -94,9 +104,14 @@
   cursor: pointer;
 }
 
-.submit-btn:hover {
+.submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: var(--shadow);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 768px) {

@@ -9,6 +9,8 @@ const Contact: React.FC = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -16,19 +18,40 @@ const Contact: React.FC = () => {
       ...prev,
       [name]: value
     }));
+    setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // 폼 제출 로직 (예: API 호출)
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setLoading(true);
+    setError('');
 
-    // 2초 후 폼 초기화
-    setTimeout(() => {
+    try {
+      const response = await fetch('/.netlify/functions/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || '메시지 전송에 실패했습니다.');
+      }
+
+      setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
-      setSubmitted(false);
-    }, 2000);
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 2000);
+    } catch (err) {
+      console.error('이메일 전송 실패:', err);
+      setError(err instanceof Error ? err.message : '메시지 전송에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -103,8 +126,9 @@ const Contact: React.FC = () => {
                 rows={5}
               ></textarea>
             </div>
-            <button type="submit" className="submit-btn">
-              {submitted ? '전송 완료!' : '메시지 전송'}
+            {error && <div className="error-message">{error}</div>}
+            <button type="submit" className="submit-btn" disabled={loading}>
+              {loading ? '전송 중...' : submitted ? '전송 완료!' : '메시지 전송'}
             </button>
           </form>
         </div>
