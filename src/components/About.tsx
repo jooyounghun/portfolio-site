@@ -9,10 +9,10 @@ const About: React.FC = () => {
         <div className="about-content">
           <div className="about-text">
             <h2>주영훈 (Younghun Joo)</h2>
-            <p className="subtitle">5년차 소프트웨어 개발자</p>
+            <p className="subtitle">8년차 소프트웨어 개발자</p>
 
             <p>
-              경희대학교 컴퓨터공학과를 졸업한 5년차 소프트웨어 개발자 주영훈입니다.
+              경희대학교 컴퓨터공학과를 졸업한 8년차 소프트웨어 개발자 주영훈입니다.
             </p>
             <p>
               개발하고 공유하는 것을 즐기며, 이로 인해 생산적인 결과를 얻게 될 때 큰
